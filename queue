@@ -1,0 +1,24 @@
+#include <iostream> 
+#include <queue> 
+#include <string> 
+using namespace std; 
+int main() 
+{ 
+queue<string> test; 
+test.push("aaa"); 
+test.push("bbb"); 
+test.push("ccc"); 
+printf("Первый элемент: \n"); 
+cout « test.front() « endl; 
+printf("Последний элемент: \n"); 
+cout « test.back() « endl; 
+printf("Количество в очереди: %i\n",test.size()); 
+printf("Удаляем один элемент...\n"); 
+test.pop(); 
+printf("Количество в очереди: %i\n",test.size()); 
+printf("Первый элемент: \n"); 
+cout « test.front() « endl; 
+printf("Последний элемент: \n"); 
+cout « test.back() « endl; 
+return 0; 
+}
