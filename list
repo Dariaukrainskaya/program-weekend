@@ -1,0 +1,71 @@
+#include <iostream> 
+#include <list> 
+#include <iterator> 
+using namespace std; 
+const int n = 10; 
+int main() 
+{ 
+std::list<int> test; 
+for(int i = 0; i<n; i++) { 
+test.push_back(i); 
+} 
+cout « "\nПервый элемент: " « test.front(); 
+cout « "\nПоследний элемент: " « test.back(); 
+cout « "\nРазмер списка: " « test.size(); 
+cout « "\nЭлементы: \n"; 
+copy(test.begin(),test.end(),ostream_iterator<int>(cout," ")); 
+cout « "\nДобавим элемент в конец списка\n"; 
+test.push_back(20); 
+cout « "\nПервый элемент: " « test.front(); 
+cout « "\nПоследний элемент: " « test.back(); 
+cout « "\nРазмер списка: " « test.size(); 
+cout « "\nЭлементы: \n"; 
+copy(test.begin(),test.end(),ostream_iterator<int>(cout," ")); 
+cout « "\nДобавим элемент в начало списка\n"; 
+test.push_front(21); 
+cout « "\nПервый элемент: " « test.front(); 
+cout « "\nПоследний элемент: " « test.back(); 
+cout « "\nРазмер списка: " « test.size(); 
+cout « "\nЭлементы: \n"; 
+copy(test.begin(),test.end(),ostream_iterator<int>(cout," ")); 
+cout « "\nУдалим элемент в начале списка\n"; 
+test.pop_front(); 
+cout « "\nПервый элемент: " « test.front(); 
+cout « "\nПоследний элемент: " « test.back(); 
+cout « "\nРазмер списка: " « test.size(); 
+cout « "\nЭлементы: \n"; 
+copy(test.begin(),test.end(),ostream_iterator<int>(cout," ")); 
+cout « "\nУдалим элемент в конце списка\n"; 
+test.pop_back(); 
+cout « "\nПервый элемент: " « test.front(); 
+cout « "\nПоследний элемент: " « test.back(); 
+cout « "\nРазмер списка: " « test.size(); 
+cout « "\nЭлементы: \n"; 
+copy(test.begin(),test.end(),ostream_iterator<int>(cout," ")); 
+std::list<int>::iterator it; 
+it = test.begin(); //устанавливаем позицию итератора на начало списка 
+cout « "\nВставим элемент в начало списка\n"; 
+test.insert(it,10); 
+cout « "\nПервый элемент: " « test.front(); 
+cout « "\nПоследний элемент: " « test.back(); 
+cout « "\nРазмер списка: " « test.size(); 
+cout « "\nЭлементы: \n"; 
+copy(test.begin(),test.end(),ostream_iterator<int>(cout," ")); 
+it = test.begin(); 
+it++; 
+cout « "\nВставим элемент на второе место в списке\n"; 
+test.insert(it,9); 
+cout « "\nПервый элемент: " « test.front(); 
+cout « "\nПоследний элемент: " « test.back(); 
+cout « "\nРазмер списка: " « test.size(); 
+cout « "\nЭлементы: \n"; 
+copy(test.begin(),test.end(),ostream_iterator<int>(cout," ")); 
+cout « "\nУдалим все 9-ки в списке\n"; 
+test.remove(9); 
+cout « "\nПервый элемент: " « test.front(); 
+cout « "\nПоследний элемент: " « test.back(); 
+cout « "\nРазмер списка: " « test.size(); 
+cout « "\nЭлементы: \n"; 
+copy(test.begin(),test.end(),ostream_iterator<int>(cout," ")); 
+return 0; 
+}
