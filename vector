@@ -1,0 +1,29 @@
+#include <iostream>
+
+using namespace std;
+
+class vector{
+public:
+	vector(){
+		length = 0;
+		array = new int[length + 1];
+	}
+
+	void push_back(int value){
+
+		int *temp = new int[length + 1];
+		for (int i = 0; i < length; i++)
+			temp[i] = array[i];
+		delete[] array;
+		array = temp;
+
+		array[length] = value;
+
+		length++;
+	}
+
+	void print(){
+		for (int i = 0; i < length; i++)
+			cout << array[i];
+		cout << endl << length << endl;
+	}
