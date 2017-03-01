@@ -1,0 +1,156 @@
+#include "stdafx.h"
+#include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
+
+using namespace std;
+
+class Bin_Tree
+{
+public:
+
+	int data;
+	Bin_Tree * left;
+	Bin_Tree * right;
+	Bin_Tree * parent;
+	Bin_Tree()
+	{
+		left = NULL;
+		right = NULL;
+		data = 0;}
+
+	Bin_Tree(Bin_Tree * source, int val)
+	{
+		if (source->left == NULL){
+			source->left = this; 
+			data = val;
+			return;}
+		if (source->right == NULL){
+			data = val;
+			source->right = this;
+			return;}
+		cout << "Binnary tree can't have more that 2 nodes" << endl;
+	}
+
+	void destr(Bin_Tree * head)
+	{
+		if (left != NULL){
+			destr(left);
+			delete left;}
+		if (left != NULL){
+			destr(right);
+			delete right;
+		}
+	}
+
+	~Bin_Tree()
+	{
+		destr(this);
+	}
+};
+
+void BFS(Bin_Tree * head);
+void DFS(Bin_Tree * head);
+
+int main()
+{
+	Bin_Tree * root = new Bin_Tree();
+	Bin_Tree * node_1 = new Bin_Tree(root, 1);
+	Bin_Tree * node_2 = new Bin_Tree(root, 2);
+	Bin_Tree * node_3 = new Bin_Tree(node_1, 3);
+	Bin_Tree * node_4 = new Bin_Tree(node_1, 4);
+	Bin_Tree * node_5 = new Bin_Tree(node_2, 5);
+	Bin_Tree * node_6 = new Bin_Tree(node_2, 6);
+	Bin_Tree * node_7 = new Bin_Tree(node_3, 7);
+	Bin_Tree * node_8 = new Bin_Tree(node_3, 8);
+	Bin_Tree * node_9 = new Bin_Tree(node_6, 9);
+	Bin_Tree * node_10 = new Bin_Tree(node_9, 10);
+	int option;
+	int repeat = 1;
+	while (repeat == 1)
+	{
+		cout << "\nDFS or BFS ?(1/2)" << endl;
+		cin >> option;
+		if (option == 1)
+			DFS(root);
+		if (option == 2)
+			BFS(root);
+		cout << "\n\nRepeat search?(1-yes/0-no)" << endl;
+		cin >> repeat;
+	}
+	getchar();
+	return 0;
+}
+
+
+
+void BFS(Bin_Tree * head)
+{
+	Bin_Tree * current_node = head;
+
+	Bin_Tree * current_lay[1024];
+	int in_cur_lay = 1;
+	int visited = 0;
+	int node_pointer = 0;
+	bool lay_changed = false;
+	int may_exit;
+	Bin_Tree * next_lay[1024];
+	int in_next_lay = 0;
+	if (current_node->left == NULL && current_node->right == NULL)
+		in_next_lay = 0;
+	do
+	{
+		if (lay_changed){
+			in_next_lay = 0;
+			lay_changed = false;}
+
+		if (current_node->left == NULL && current_node->right == NULL)
+			in_next_lay += 0;
+
+		if (current_node->left != NULL){
+			next_lay[in_next_lay] = current_node->left;
+			in_next_lay += 1;}
+
+		if (current_node->right != NULL){
+			next_lay[in_next_lay] = current_node->right;
+			in_next_lay += 1;}
+
+		cout << "This is node: " << current_node->data << " " << endl;
+		if (current_node->left != NULL)
+			cout << "Left node is " << current_node->left->data << endl;
+		if (current_node->right != NULL)
+			cout << "Right node is " << current_node->right->data << endl;
+		cout << endl;
+		visited++;
+		node_pointer++;
+		if (visited != in_cur_lay){
+			current_node = current_lay[node_pointer];
+			may_exit = 0;
+		}
+		else
+		{ 
+			if (in_next_lay != 0){
+				visited = 0;
+				node_pointer = 0;
+				in_cur_lay = in_next_lay;
+				for (int i = 0; i < in_cur_lay; i++)
+					current_lay[i] = next_lay[i];
+				lay_changed = true;
+				cout << "-----------------------\n";
+				current_node = current_lay[0];}
+			else
+				may_exit = 1;
+		}
+	} while (may_exit!=1);
+}
+
+
+
+void DFS(Bin_Tree * head)
+{
+	cout << "\n" << head->data;
+	if (head->left != NULL)
+		DFS(head->left);
+	if (head->right != NULL)
+		DFS(head->right);
+}
