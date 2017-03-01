@@ -1,0 +1,22 @@
+#include <iostream> 
+#include <stack> 
+using namespace std; 
+const int n = 10; 
+int main() 
+{ 
+std::stack<int> test; 
+for(int i = 0; i<n; i++) { 
+test.push(i); 
+} 
+cout « "\nПервый элемент: " « test.top(); 
+cout « "\nРазмер стека: " « test.size(); 
+
+while (!(test.empty())) 
+{ 
+cout«"\nПервый элемент: " « test.top(); 
+cout «"\nУдаляем его..."; 
+test.pop(); 
+cout « "\nРазмер стека: " « test.size(); 
+} 
+return 0; 
+}
