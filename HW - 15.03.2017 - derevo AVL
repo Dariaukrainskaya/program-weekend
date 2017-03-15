@@ -1,0 +1,446 @@
+#include <iostream> 
+//#include <stdout> 
+//#include <ctype> 
+//#include <stdlib> 
+//#include <conio> 
+using namespace std; 
+struct unit 
+{ 
+int element; 
+unit *left; 
+unit *right; 
+int height; 
+}; 
+
+typedef struct unit *nodeptr; 
+
+class CustomTree 
+{ 
+public: 
+void insert(int,nodeptr &); 
+void del(int, nodeptr &); 
+int deletemin(nodeptr &); 
+void find(int,nodeptr &); 
+nodeptr findmin(nodeptr); 
+nodeptr findmax(nodeptr); 
+void makeempty(nodeptr &); 
+void copy(nodeptr &,nodeptr &); 
+nodeptr nodecopy(nodeptr &); 
+void preorder(nodeptr); 
+void inorder(nodeptr); 
+void postorder(nodeptr); 
+int treeheight(nodeptr); 
+nodeptr srl(nodeptr &); 
+nodeptr drl(nodeptr &); 
+nodeptr srr(nodeptr &); 
+nodeptr drr(nodeptr &); 
+int max(int,int); 
+int nonodes(nodeptr); 
+}; 
+// Вставка 
+void CustomTree::insert(int x,nodeptr &p) 
+{ 
+if (p == NULL) 
+{ 
+p = new unit; 
+p->element = x; 
+p->left=NULL; 
+p->right = NULL; 
+p->height=0; 
+if (p==NULL) 
+{ 
+cout << "Конец\n"«endl; 
+} 
+} 
+else 
+{ 
+if (x<p->element) 
+{ 
+insert(x,p->left); 
+if ((treeheight(p->left) - treeheight(p->right))==2) 
+{ 
+if (x < p->left->element) 
+{ 
+p=srl(p); 
+} 
+else 
+{ 
+p = drl(p); 
+} 
+} 
+} 
+else if (x>p->element) 
+{ 
+insert(x,p->right); 
+if ((treeheight(p->right) - treeheight(p->left))==2) 
+{ 
+if (x > p->right->element) 
+{ 
+p=srr(p); 
+} 
+else 
+{ 
+p = drr(p); 
+} 
+} 
+} 
+else 
+{ 
+cout << "Элемент существует\n"«endl; 
+} 
+} 
+int m,n,d; 
+m=treeheight(p->left); 
+n=treeheight(p->right); 
+d=max(m,n); 
+p->height = d + 1; 
+} 
+// поиск минимума 
+nodeptr CustomTree::findmin(nodeptr p) 
+{ 
+if (p==NULL) 
+{ 
+cout << "В дереве нет элементов\n"«endl; 
+return p; 
+} 
+else 
+{ 
+while(p->left !=NULL) 
+{ 
+p=p->left; 
+//return p; 
+} 
+return p; 
+} 
+} 
+// поиск максимума 
+nodeptr CustomTree::findmax(nodeptr p) 
+{ 
+if (p==NULL) 
+{ 
+cout << "В дереве нет элементов\n"«endl; 
+return p; 
+} 
+else 
+{ 
+while(p->right !=NULL) 
+{ 
+p=p->right; 
+//return p; 
+} 
+return p; 
+} 
+} 
+// поиск элемента 
+void CustomTree::find(int x,nodeptr &p) 
+{ 
+if (p==NULL) 
+{ 
+cout << "Элемент не найден\n"«endl; 
+} 
+else 
+{ 
+if (x < p->element) 
+{ 
+find(x,p->left); 
+} 
+else 
+{ 
+if (x>p->element) 
+{ 
+find(x,p->right); 
+} 
+else 
+{ 
+cout <<"Элемент найден\n"«endl; 
+} 
+} 
+} 
+} 
+// Копируем дерево 
+void CustomTree::copy(nodeptr &p,nodeptr &p1) 
+{ 
+makeempty(p1); 
+p1 = nodecopy(p); 
+} 
+// Make a tree empty 
+void CustomTree::makeempty(nodeptr &p) 
+{ 
+nodeptr d; 
+if (p != NULL) 
+{ 
+makeempty(p->left); 
+makeempty(p->right); 
+d=p; 
+free(d); 
+p=NULL; 
+} 
+} 
+// Копирование узла 
+nodeptr CustomTree::nodecopy(nodeptr &p) 
+{ 
+nodeptr temp; 
+if (p==NULL) 
+{ 
+return p; 
+} 
+else 
+{ 
+temp = new unit; 
+temp->element = p->element; 
+temp->left = nodecopy(p->left); 
+temp->right = nodecopy(p->right); 
+return temp; 
+} 
+} 
+
+// Удаление узла 
+void CustomTree::del(int x,nodeptr &p) 
+{ 
+nodeptr d; 
+if (p==NULL) 
+{ 
+cout << "Элемент не найден\n"«endl; 
+} 
+else if ( x < p->element) 
+{ 
+del(x,p->left); 
+} 
+else if (x > p->element) 
+{ 
+del(x,p->right); 
+} 
+else if ((p->left == NULL) && (p->right == NULL)) 
+{ 
+d=p; 
+free(d); 
+p=NULL; 
+cout << "Элемент удален\n"«endl; 
+} 
+else if (p->left == NULL) 
+{ 
+d=p; 
+free(d); 
+p=p->right; 
+cout << "Элемент удален\n"«endl; 
+} 
+else if (p->right == NULL) 
+{ 
+d=p; 
+p=p->left; 
+free(d); 
+cout << "Элемент удален\n"«endl; 
+} 
+else 
+{ 
+p->element = deletemin(p->right); 
+} 
+} 
+
+int CustomTree::deletemin(nodeptr &p) 
+{ 
+int c; 
+cout << "Удаление минимального значения\n"«endl; 
+if (p->left == NULL) 
+{ 
+c=p->element; 
+p=p->right; 
+return c; 
+} 
+else 
+{ 
+c=deletemin(p->left); 
+return c; 
+} 
+} 
+void CustomTree::preorder(nodeptr p) 
+{ 
+if (p!=NULL) 
+{
+cout<< p->element«"\t"; 
+preorder(p->left); 
+preorder(p->right); 
+} 
+} 
+
+// Вывод по порядку 
+void CustomTree::inorder(nodeptr p) 
+{ 
+if (p!=NULL) 
+{ 
+inorder(p->left); 
+cout << p->element«"\t"; 
+inorder(p->right); 
+} 
+} 
+
+// Обратный порядок вывода 
+void CustomTree::postorder(nodeptr p) 
+{ 
+if (p!=NULL) 
+{ 
+postorder(p->left); 
+postorder(p->right); 
+cout << p->element«"\t"; 
+} 
+} 
+
+int CustomTree::max(int value1, int value2) 
+{ 
+return ((value1 > value2) ? value1 : value2); 
+} 
+int CustomTree::treeheight(nodeptr p) 
+{ 
+int t; 
+if (p == NULL) 
+{ 
+return -1; 
+} 
+else 
+{ 
+t = p->height; 
+return t; 
+} 
+} 
+
+nodeptr CustomTree::srl(nodeptr &p1) 
+{ 
+nodeptr p2; 
+p2 = p1->left; 
+p1->left = p2->right; 
+p2->right = p1; 
+p1->height = max(treeheight(p1->left),treeheight(p1->right)) + 1; 
+p2->height = max(treeheight(p2->left),p1->height) + 1; 
+return p2; 
+} 
+nodeptr CustomTree::srr(nodeptr &p1) 
+{ 
+nodeptr p2; 
+p2 = p1->right; 
+p1->right = p2->left; 
+p2->left = p1; 
+p1->height = max(treeheight(p1->left),treeheight(p1->right)) + 1; 
+p2->height = max(p1->height,treeheight(p2->right)) + 1; 
+return p2; 
+} 
+nodeptr CustomTree::drl(nodeptr &p1) 
+{ 
+p1->left=srr(p1->left); 
+return srl(p1); 
+} 
+nodeptr CustomTree::drr(nodeptr &p1) 
+{ 
+p1->right = srl(p1->right); 
+return srr(p1); 
+} 
+
+int CustomTree::nonodes(nodeptr p) 
+{ 
+int count=0; 
+if (p!=NULL) 
+{ 
+nonodes(p->left); 
+nonodes(p->right); 
+count++; 
+} 
+return count; 
+} 
+
+int main() 
+{ 
+nodeptr root,root1,min,max; 
+int a,choice,findele,delele; 
+char ch='y'; 
+CustomTree mytree; 
+
+root = NULL; 
+root1=NULL; 
+
+do 
+{ 
+cout <<"\t\t::::::::::::::::::::::::::::::::::::::::::::::::"«endl; 
+cout << "\t\t::::1 Вставить новый узел::::::::::::::::"«endl; 
+cout << "\t\t::::2 Найти минимальный элемент:::::::::::"«endl; 
+cout << "\t\t::::3 Найти максимальный элемент:::::::::::::::"«endl; 
+cout << "\t\t::::4 Поиск по значению:::::::::::::::::::"«endl; 
+cout << "\t\t::::5 Удалить элемент:::::::::::::::::::"«endl; 
+cout << "\t\t::::6 Вариант обхода1:::::::::::::::::"«endl; 
+cout << "\t\t::::7 Вариант обхода2::::::::::::::::::"«endl; 
+cout << "\t\t::::8 Вариант обхода3::::::::::::::::"«endl; 
+cout << "\t\t::::9 Показать высоту дерева:::"«endl; 
+cout << "\t\t::::0 Выход:::::::::::::::::::::::::::::"«endl; 
+cout << "\t\t::::::::::::::::::::::::::::::::::::::::::::::::\n"«endl; 
+
+cout << "\nВыберите нужное действие и нажмите Enter: "; 
+cin >> choice; 
+
+switch(choice) 
+{ 
+case 1: 
+cout << "\n\t\tДобавление нового элемента"«endl; 
+cout << "\t\t:::::::::::::\n"«endl; 
+cout << "Введите элемент: "; 
+cin >> a; 
+mytree.insert(a,root); 
+cout << "\nНовый элемент добавлен успешно\n"«endl; 
+break; 
+case 2: 
+if (root !=NULL) 
+{ 
+min=mytree.findmin(root); 
+cout << "\nМинимальный элемент в дереве: "«min->element«endl; 
+} 
+break; 
+case 3: 
+if (root !=NULL) 
+{ 
+max=mytree.findmax(root); 
+cout << "\nМаксимальный элемент в дереве: "«max->element«endl; 
+} 
+break; 
+case 4: 
+cout << "\nВведите искомый элемент: "; 
+cin >> findele; 
+if (root != NULL) 
+{ 
+mytree.find(findele,root); 
+} 
+break; 
+case 5: 
+cout << "\nУкажите элемент для удаления : "; 
+cin >> delele; 
+mytree.del(delele,root); 
+mytree.inorder(root); 
+cout << endl; 
+break; 
+case 6: 
+cout << "\n\t\tВариант обхода 1"«endl; 
+mytree.preorder(root); 
+cout << endl; 
+break; 
+case 7: 
+cout << "\n\t\tВариант обхода 2"«endl; 
+mytree.inorder(root); 
+cout << endl; 
+break; 
+case 8: 
+cout << "\n\t\tВариант обхода 3"«endl; 
+mytree.postorder(root); 
+cout << endl; 
+break; 
+case 9: 
+cout << "Высота дерева: "«mytree.treeheight(root)«endl; 
+
+break; 
+case 0: 
+cout << "\n\tРабота окончена\n"«endl; 
+break; 
+default: 
+cout << "Неверный ввод\n"«endl; 
+break; 
+}
+system("pause"); 
+system("cls"); 
+}while(choice != 0); 
+return 0; 
+}
