@@ -1,0 +1,133 @@
+#include <iostream>
+#include <string>
+
+using namespace std;
+
+class Dict
+{
+ public:
+    string *Key;
+    int *Value;
+    int Size;
+
+    Dict(string key, int value)
+    {
+        Size=1;
+        Value = new int[Size];
+        Key = new string[Size];
+        Key[0]=key;
+        Value[0]=value;
+     }
+
+     ~Dict()
+     {
+       delete []Value;
+        delete []Key;
+        Size= 0;
+     }
+
+     void Add(string key, int value)
+     {
+        int *val_buf=new int[Size];
+        string *key_buf=new string[Size];
+
+        for(int i=0;i<Size;i++){
+            val_buf[i]=Value[i];
+            key_buf[i]=Key[i];}
+
+        Size++;
+
+        Value = new int[Size];
+        Key = new string[Size];
+
+        for(int i=0;i<Size-1;i++){
+            Value[i]=val_buf[i];
+            Key[i]=key_buf[i];}
+
+        Value[Size-1]=value;
+        Key[Size-1]=key;
+        delete []val_buf;
+        delete []key_buf;
+     }
+
+     void Delete(string val)
+     {
+     	string * key_buf = new string[Size-1];
+     	int * val_buf = new int[Size-1];
+     	int s=Size;
+     	int j=0;
+
+     	for(int i=0; i<s; i++)
+     	{
+     		if(Key[i]!=val)
+     		{
+     			key_buf[j]=Key[i];
+     			j++;
+     		}
+     		else
+     			Size--;
+     	}
+
+		Key=new string[Size];
+		Value=new int[Size];
+
+
+		for(int i=0;i<Size;i++)
+     	{
+     		Key[i]=key_buf[i];
+     		Value[i]=val_buf[i];
+     	}
+
+     	delete []val_buf;
+        delete []key_buf;
+
+     }
+
+     void Print()
+     {
+        cout << endl;
+        for(int i=0;i<Size;i++)
+        cout << Key[i] << "=" << Value[i] << endl;
+
+     }
+
+    int& operator[](string val);
+
+};
+
+int& Dict::operator[](string val)
+{
+
+    for(int i=0;i<Size;i++)
+    {
+	        if(Key[i]==val){
+            return Value[i];
+        }
+    }
+    Add(val,0);
+    return Value[Size-1];
+}
+
+
+int main(int argc, char const *argv[])
+{
+    Dict d = Dict("Spb",12);
+
+    d.Print();
+
+    d["Moscow"]=10;
+
+    d.Print();
+
+    d["Moscow"]=122;
+
+    d.Print();
+
+    d["Ekb"]=11;
+    d["Voron"]=34;
+
+    d.Delete("Spb");
+
+    d.Print();
+	return 0;
+}
