@@ -1,0 +1,349 @@
+#include <iostream>
+#include <stdlib.h>
+#include <stdio.h>
+#include <string>
+#include <queue>
+
+#ifdef linux
+#define RED "\x1b[30;43m" 
+#define BLACK "\x1b[33;40m" 
+#define END  "\x1b[0m"
+#else
+#define RED "[R-" 
+#define BLACK "[B-" 
+#define END  "]"
+#endif
+
+using namespace std;
+
+class BLACKRED
+{
+public:
+	string data;
+	string color;
+
+	BLACKRED * left;
+	BLACKRED * right;
+	BLACKRED * parent;
+	BLACKRED * begin;
+
+	void PrintData(){
+		cout << color <<  data << END;
+	}
+
+	void AddToTree(BLACKRED ** head, BLACKRED * node, int n)
+	{
+		BLACKRED * queue[1024];	
+		int count=0;
+		
+		for (int i = 0; i < n; i++)
+		{
+			if(head[i]->left==NULL)
+			{
+				head[i]->left=node;
+				parent=head[i]->left;
+				return;
+			}
+			else
+			{
+				queue[count]=head[i]->left;
+				count++;
+			}
+			if(head[i]->right==NULL)
+			{
+				head[i]->right=node;
+				parent=head[i]->right;
+				return;
+			}
+			else
+			{
+				queue[count]=head[i]->right;
+				count++;
+			}
+		}
+		if (count!=0){
+			AddToTree(queue,node,count);}
+		return;
+
+	}
+
+	void AddToTree(BLACKRED * head)
+	{
+		if(head->left==NULL){
+			head->left=this;
+			parent=head;
+			return;
+		}
+		if(head->right==NULL){
+			head->right=this;
+			parent=head;
+			return;
+		}
+		BLACKRED * queue[2]= {head->left,head->right};
+		AddToTree(queue,this,2);
+		return;
+	}
+
+	bool isEmpty()
+	{
+		if(left==NULL && right == NULL){
+			cout << "\nTree is empty"<<endl;
+			return true;}
+		else {
+			cout << "\nTree is not empty"<<endl;
+			return false;}
+	}
+	
+	bool InTree(BLACKRED ** head,BLACKRED * node, int n)
+	{
+		BLACKRED * queue[1024];	
+		int count=0;
+		bool in = false;
+
+		for (int i = 0; i < n; i++){
+			if(node->data==head[i]->data){
+				cout << "asdasdasdsadsa";
+				cout << endl << "!!!WHAT THE FUCK!!!"<<endl;
+				cout << "asdasdasdsadsa";
+				cout << "Node ";
+				//node->PrintData();
+				//cout << " in tree";
+				return true;
+			}
+
+			if(head[i]->left!=NULL){
+				queue[count]=head[i]->left;
+				count++;}
+			if(head[i]->right!=NULL){
+				queue[count]=head[i]->right;
+				count++;}
+		}
+		if (count!=0){
+			return	InTree(queue,node,count);}
+		else{
+			cout << "\nTree haven't node ";
+			node->PrintData();
+			return false;
+		}
+	}
+
+	bool InTree(BLACKRED * head)
+	{
+		bool in = false;
+		int count = 0;
+
+		if(data==head->data){
+			cout << "\nNode ";
+			PrintData();
+			cout << " in tree";
+			return true;}
+		
+		else{
+			if(head->left!=NULL){
+				count++;
+
+			}
+			if(head->right!=NULL){
+				count++;
+			}
+		}
+		if(count!=0)
+		{
+			if(count==1){
+				BLACKRED * queue[1]= {head->left};
+				return InTree(queue,this,1);
+
+			}
+			else{
+				BLACKRED * queue[2]= {head->left,head->right};
+				return InTree(queue,this,2);}
+		}
+		else 
+		{
+			cout << "\nTree haven't node ";
+			PrintData();
+			return false;
+		}
+	}
+
+
+	BLACKRED(){
+		left  = NULL;
+		right = NULL;
+		parent = NULL;
+		begin = NULL;
+		color = RED;
+		data = "root";}
+	BLACKRED(BLACKRED * start){
+		left  = NULL;
+		right = NULL;
+		parent = NULL;
+		begin = start;
+		color = RED;
+		data = "root";}
+	BLACKRED(BLACKRED * start,string fill){
+		left  = NULL;
+		right = NULL;
+		parent = NULL;
+		begin = start;
+		color = RED;
+		data = fill;}
+	~BLACKRED();
+	
+};
+
+void Redraw(BLACKRED * head);
+
+//BLACKRED * rooter = new BLACKRED();
+
+
+void RootReDraw(BLACKRED * node)
+{
+	if(node->parent != NULL)
+		RootReDraw(node->parent);
+	else
+		node->color = BLACK;
+	return;
+}
+
+void BFS(BLACKRED ** head, int n)
+{
+	cout << endl;
+	BLACKRED * queue[1024];	
+	int count=0;
+	for (int i = 0; i < n; i++){
+		head[i]->PrintData();
+		cout << " ";
+		if(head[i]->left!=NULL){
+			queue[count]=head[i]->left;
+			count++;}
+		if(head[i]->right!=NULL){
+			queue[count]=head[i]->right;
+			count++;}
+	}	
+	if (count!=0){
+		BFS(queue,count);}
+	return;
+}
+
+void BFS(BLACKRED * head)
+{
+	head->PrintData();
+	BLACKRED * queue[2]= {head->left,head->right};
+	BFS(queue,2);
+	return;
+}
+
+int main(int argc, char const *argv[])
+{
+	BLACKRED * root  = new BLACKRED(root); root->color = BLACK;
+	BLACKRED * node1 = new BLACKRED(root,"one");
+	BLACKRED * node2 = new BLACKRED(root,"two");
+	BLACKRED * node3 = new BLACKRED(root,"three");
+	BLACKRED * node4 = new BLACKRED(root,"four");
+	BLACKRED * node5 = new BLACKRED(root,"five");	
+	BLACKRED * node6 = new BLACKRED(root,"six");
+	BLACKRED * node7 = new BLACKRED(root,"seven");
+
+	root->PrintData();
+	root->isEmpty();
+
+	node1->AddToTree(root);
+	node2->AddToTree(root);
+	Redraw(root);
+
+	cout << "\n1"<<endl;
+	BFS(root);
+	cout << endl;
+
+	root->isEmpty();
+
+	node3->InTree(root);
+
+	node3->AddToTree(root);
+
+	cout<<"\n2"<<endl;
+	BFS(root);
+	//----------//
+	node3->InTree(root);
+
+	Redraw(root);
+	
+	cout <<"\n3"<<endl;
+	BFS(root);
+	cout << endl;
+
+	node1->right = node4;
+	node4->parent= node1;
+	
+	Redraw(root);
+
+	node2->left  = node5;
+	node5->parent= node2;
+	Redraw(root);
+
+	node2->right = node6;
+	node6->parent= node2;
+	Redraw(root);
+
+	cout <<"\n4"<<endl;
+	BFS(root);
+	cout << endl;
+
+	Redraw(root);
+
+	node3->left  = node7;
+	node7->parent= node3;
+
+	cout <<"\n5"<<endl;
+	BFS(root);
+
+	Redraw(root);
+
+	cout <<"\n6"<<endl;
+	BFS(root);
+
+
+	return 0;
+}
+
+
+void Redraw(BLACKRED * head)
+{
+	RootReDraw(head);
+	if(head->color == RED){	
+		if(head->left!=NULL && head->parent!=NULL && head->left->color==RED && head->parent->right->color == RED){
+			head->color = BLACK;
+			head->parent->right->color=BLACK;
+			head->parent->color=RED;
+			Redraw(head->begin);
+		}
+		if(head->left != NULL && head->right != NULL && head->left->color == RED && head->right->color == BLACK){	
+			if(head->parent != NULL){
+				if(head->parent->left==head){
+					head->parent->left = head->right;
+				}
+				else{
+					head->parent->right = head->right;
+				}
+			}
+
+			BLACKRED * buf;
+			buf = head->right;
+			head->right = head->right->left;
+			head->right->parent = head;
+			
+			buf->left = head;
+			head->parent = buf;
+				head-> color = BLACK;
+			head->left->color = RED;
+			head->right->color = RED;
+			Redraw(head);
+		}
+	}
+	if(head->left != NULL){
+		Redraw(head->left);}	
+	if(head->right != NULL){
+		Redraw(head->right);}
+	return;
+}
