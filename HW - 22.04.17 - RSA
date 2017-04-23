@@ -1,0 +1,89 @@
+#include <iostream>
+#include <vector>
+#include <iterator>
+#include <string>
+#include <cstdio>
+#include <cmath>
+
+using namespace std;
+
+int simple(int n){
+    for(int i=2;i<= n/2;i++) 
+    	if( (n%i)==0 ) 
+    		return 0;
+return 1;
+}
+
+
+int rpn(int x, int y)
+{
+    return y ? rpn(y,x%y) : x;
+}
+
+vector<int> v;
+vector<int> v2;
+
+long int bpow(long int x, int n, int m)
+{
+  int count=1;
+  if (!n) return 1;
+  while (n) {
+    if (n%2==0) {
+      n/=2;
+      x*=x;
+      x %= m;
+    } else {
+      n--;
+      count*=x;
+      count %=m;
+    }
+  }
+  return count % m;
+}
+
+int main(int argc, char const *argv[])
+{
+	srand(time(0));
+
+	long int message=11;
+	int diap;
+    cout << "Enter diap(exmple 100):";
+    cin >> diap;
+
+	for(int i=3;i < diap;i++)    
+		if(simple(i))  
+			v.push_back(i);
+	for (int i = 0; i < v.size(); i++)
+	{
+		cout << v[i] << endl;
+	}
+    int simple1=v[rand()%v.size()];
+    int simple2=v[rand()%v.size()];
+	
+
+    cout << "\nsimple 1 = " << simple1;
+    cout << "\nsimple 2 = " << simple2;
+
+    int mod = simple1*simple2;
+    cout << "\nmod      = " << mod;
+
+    int eiler=(simple1-1)*(simple2-1);
+	cout << "\neiler()  = " << eiler;
+
+	int open_exp;
+
+	for(int i=3;i < eiler;i++)    
+		if(simple(i))
+			if(rpn(i,eiler)==1){
+				open_exp=i;
+				break;
+			}
+
+	cout<<"\nopen exp = " << open_exp;
+
+ 	long int code_message = bpow(message,open_exp,mod);
+
+	cout << "\n\nmessage = " << message;
+	cout << "\ncode message = " << code_message;
+	return 0;
+}
