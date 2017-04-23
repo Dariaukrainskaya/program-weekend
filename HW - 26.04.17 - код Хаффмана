@@ -1,0 +1,182 @@
+#include <iostream>
+#include <vector>
+#include <iterator>
+#include <string>
+#include <cstdio>
+
+using namespace std;
+
+class Pair
+{
+	public:
+	string symbol;
+	int conut;
+	Pair* left;
+	Pair* right;
+	Pair* parent;
+	string c;
+
+	Pair()
+	{
+		symbol="";
+		conut=0;
+		left=NULL;
+		right=NULL;
+		parent=NULL;
+		c="";
+	}
+	
+	Pair(char s, int n){
+		symbol=s;
+		conut=n;
+		left=NULL;
+		right=NULL;
+		parent=NULL;
+		c="";
+	};
+
+	~Pair(){};	
+};
+
+vector<Pair> array, array1;
+
+void DFS(Pair * node,string code)
+{
+	
+	if(node->left==NULL && node->right==NULL){
+		node->c=code;
+		cout << node->symbol<<" = "<<node->c<<endl;}
+	if (node->left != NULL)
+		DFS(node->left,code+"0");
+	if (node->right != NULL)
+		DFS(node->right,code+"1");
+}
+
+void release(int min)
+{
+	
+	for(int i = 0; i < array.size(); i++) {
+		for(int j = 0; j < array.size(); j++) {
+			if((i!=j) && (array[i].conut + array[j].conut == min)){
+
+				Pair * buf= new Pair();
+				
+				buf->conut=array[i].conut+array[j].conut;
+				buf->symbol=array[i].symbol+array[j].symbol;
+
+				for (int k = 0; k < array1.size(); k++){
+					if (array[i].symbol==array1[k].symbol){
+							if(array[i].conut<array[j].conut)
+								buf->left=&array1[k];
+							else
+								buf->right=&array1[k];
+						}
+				}
+				
+				for (int k = 0; k < array1.size(); k++){
+					if (array[j].symbol==array1[k].symbol){
+							if(array[i].conut<array[j].conut)
+								buf->right=&array1[k];
+							else
+								buf->left=&array1[k];
+					}
+				}
+
+				array1.insert(array1.end(), Pair());
+				array1[array1.size()-1]=*buf;
+				array.insert(array.end(), Pair());
+				array[array.size()-1]=*buf;
+
+				array.erase(array.begin()+i);
+				array.erase(array.begin()+j-1);
+				return;
+			}
+		}
+	}
+}
+
+int main(int argc, char const *argv[])
+{
+
+    array.insert(array.end(), Pair('f',4));    
+    array.insert(array.end(), Pair('a',3));
+    array.insert(array.end(), Pair('d',2));
+    array.insert(array.end(), Pair('k',2));
+    array.insert(array.end(), Pair('c',2));
+    array.insert(array.end(), Pair('r',1));
+    array.insert(array.end(), Pair('n',1));
+
+    int num_of_chars=7;
+
+    array1=array;
+
+	for(int i = 0; i < array.size(); i++) {
+        cout << array[i].symbol << "/" << array[i].conut << endl;
+    }
+    cout << endl;
+
+while(array.size() != 1){
+    int min_sum=999999;
+    for(int i = 0; i < array.size(); i++) {
+		for(int j = 0; j < array.size(); j++) {
+			if(i!=j && array[i].conut + array[j].conut < min_sum){
+				min_sum = array[i].conut + array[j].conut;
+			}
+		}	
+	}
+
+	release(min_sum);
+    
+    cout << min_sum <<endl;
+	for(int i = 0; i < array.size(); i++) {
+        cout << array[i].symbol << "/" << array[i].conut << endl;
+    }
+    cout << endl;	
+
+    //getchar();
+} 
+
+for(int i = 0; i < array1.size(); i++) {
+        cout  <<  array1[i].symbol << " / " << array1[i].conut << endl;
+    }
+    cout << endl;
+
+
+std::vector<Pair> vector3;
+
+Pair* head = &array1[array1.size()-1];
+
+cout << "      ";
+cout << head->symbol;
+cout << "\n     /      \\ \n   ";
+cout << head->left->symbol;
+cout << "      ";
+cout << head->right->symbol; 
+cout <<  "\n  /  \\     /   \\\n ";
+cout << head->left->left->symbol;
+cout << "    ";
+cout << head->left->right->symbol;
+cout << "   ";
+cout << head->right->left->symbol;
+cout << "   ";
+cout << head->right->right->symbol;
+cout << "\n         / \\   /  \\\n        ";
+cout << head->right->left->left->symbol;
+cout << "   ";
+cout << head->right->left->right->symbol;
+cout << " ";
+cout << head->right->right->left->symbol;
+cout << "   ";
+cout << head->right->right->right->symbol;
+cout << "\n       /  \\\n      ";
+cout << head->right->left->left->left->symbol;
+cout << "    ";
+cout << head->right->left->left->right->symbol;
+
+string code="";
+
+cout << endl << endl;
+DFS(head,code);
+
+return 0;
+}
